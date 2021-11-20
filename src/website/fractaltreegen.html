@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <canvas id="can" width="1080" height="1080"></canvas>
+        <script>
+            let can = document.getElementById("can");
+            let ctx = can.getContext("2d")
+
+            async function draw(Xpos, Ypos, len, angle, branchWidth, color1, color2, line) {
+                ctx.beginPath();
+                ctx.save();
+                ctx.strokeStyle = color1;
+                ctx.fillStyle = color2;
+                ctx.lineWidth = branchWidth;
+                ctx.translate(Xpos, Ypos);
+                ctx.rotate(angle * Math.PI/180);
+                ctx.moveTo(0, 0);
+                
+                if(line) {
+                    ctx.lineTo(0, -len);
+                } else {
+                    if (angle > 0) {
+                        ctx.bezierCurveTo(10, -len/2, 50, -len/2, 0, -len);
+                    } else {
+                        ctx.bezierCurveTo(10, -len/2, 50, -len/2, 0, -len);
+                    }
+                }
+
+                ctx.stroke();
+
+                if(len < 15) {
+                    ctx.beginPath();
+                    ctx.arc(0, -len, 15, 0, Math.PI/2);
+                    ctx.fill();
+                    ctx.restore();
+                    return;
+                }
+
+                // Recursion - Call The Function While Shorting The Length
+                draw(0, -len, len*0.8, -15, branchWidth*0.8, color1, color2, line);
+                draw(0, -len, len*0.8, +15, branchWidth*0.8, color1, color2, line);
+
+                ctx.restore();
+            }
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            draw(520, 700, 120, 0, 2, 'brown', 'green', true);
+            draw(520, 300, 120, 180, 2, 'brown', 'green', true);
+
+            function print_canvasr(){
+                let img = can.toDataURL("image/png");
+                window.win = open(img);
+                setTimeout('win.document.execCommand("Print")', 500);
+            }
+
+            print_canvasr();
+        </script>
+    </body>
+</html>
