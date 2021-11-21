@@ -1,4 +1,4 @@
 # go_fractal
 Golang Webserver, Fractal Generator
 
-Update test keyring
+Used to generate fractal artwork
